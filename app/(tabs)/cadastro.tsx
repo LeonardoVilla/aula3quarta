@@ -13,7 +13,7 @@ export default function Login(){
             <TextInput style={styles.Input} />
             <TextInput style={styles.Input}/>
             <TouchableOpacity style={styles.Button}>
-                <Text style={styles.Text}>Entrar</Text>
+                <Text style={styles.Text}>Login</Text>
             </TouchableOpacity>
         </View>
     );
