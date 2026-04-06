@@ -11,8 +11,6 @@ import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { supabase } from '@/lib/supabase';
 
-import { router } from 'expo-router';//captura de rota
-
 export default function Cadastro() {
 
     const [nomeAluno, setNomeAluno] = useState('')
@@ -21,22 +19,23 @@ export default function Cadastro() {
     
     const [loading, setLoading] = useState(false)
 
-    async function validarLogin() {
+    async function cadAluno() {
 
         setLoading(true)
 
-        const { error } = await supabase
+        const { data, error } = await supabase
             .from('tb_aluno')
-            .insert(
+            .insert([
                 {
-                    nomeAluno, 
-                    idadeAluno, 
-                    emailAluno
-                }
-            )
+                    nome: nomeAluno, 
+                    idade: idadeAluno, 
+                    email: emailAluno
+                },
+            ])
         .select()
 
         if(error){
+            setLoading(false)
             Toast.show({
                 type: 'error',
                 text1: 'Erro!',
@@ -47,7 +46,7 @@ export default function Cadastro() {
             Toast.show({
                 type: 'success',
                 text1: 'Sucesso!',
-                text2: 'Cadastro realizado com sucesso!'
+                text2: `Aluno ${data?.[0]?.nome} cadastrado com sucesso!`
             })
         }
         
@@ -80,7 +79,7 @@ export default function Cadastro() {
 
             <Toast />
 
-            <TouchableOpacity style={styles.Button} onPress={validarLogin} disabled={loading}>
+            <TouchableOpacity style={styles.Button} onPress={cadAluno} disabled={loading}>
                 <Text style={styles.Text}>Cadastrar Aluno</Text>
             </TouchableOpacity>
         </View>
