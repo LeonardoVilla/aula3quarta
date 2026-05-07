@@ -1,8 +1,12 @@
 import { supabase } from "@/lib/supabase";
-import { useEffect, useState } from "react";
 import { useIsFocused } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import { router } from "expo-router";
+
+import Toast from "react-native-toast-message";
 
 export default function ConsultarAluno(){
     const [alunos, setAlunos] = useState<any[]>([]);
@@ -22,6 +26,33 @@ export default function ConsultarAluno(){
         setAlunos(data || []);
     }
 
+    async function editarAlunos(id: number){
+        router.push({pathname: '/(tabs)/cadastro', params: {id: id}});
+    }
+
+    async function excluirAlunos(id: number){
+
+        const { error } = await supabase
+            .from("tb_aluno")
+            .delete()
+            .eq('id', id)
+
+        if(error ){
+            Toast.show({
+                type: 'error',
+                text1: 'Erro!',
+                text2: 'Não foi possível excluir o aluno.'+ error.message
+            })
+        }else{
+            Toast.show({
+                type: 'success',
+                text1: 'Sucesso!',
+                text2: 'Aluno excluído com sucesso!'
+            })
+        }
+        carregarAlunos();
+    }
+
     return(
         <View style={styles.container}>
             <Text>Consultar Aluno</Text>
@@ -33,9 +64,17 @@ export default function ConsultarAluno(){
                         <Text>{item.nome}</Text>
                         <Text>{item.idade}</Text>
                         <Text>{item.email}</Text>
+                        <TouchableOpacity onPress={() => editarAlunos(item.id)}>
+                            <Text>Editar</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => excluirAlunos(item.id)}>  
+                            <Text>Excluir</Text>
+                        </TouchableOpacity>
                     </View>
                 )}
             />
+            <Toast />
         </View>
     )
 };
