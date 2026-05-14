@@ -23,11 +23,11 @@ export default function ConsultarAluno(){
             .from("tb_aluno")
             .select("*")
 
-        if(error){
+        if (error) {
             Toast.show({
                 type: 'error',
                 text1: 'Erro!',
-                text2: 'Não foi possível carregar os alunos.' + error.message
+                text2: `Não foi possível carregar os alunos. ${error.message}`
             });
             return;
         }
