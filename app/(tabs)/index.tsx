@@ -1,10 +1,10 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 const SENAC = {
-  azul: '#004A8D',
-  laranja: '#F7941D',
-  fundo: '#F5F8FC',
-  texto: '#1F2937',
+  blue: '#004A8D',
+  orange: '#F7941D',
+  background: '#F5F8FC',
+  text: '#1F2937',
 };
 
 export default function HomeScreen() {
@@ -35,13 +35,13 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: SENAC.fundo,
+    backgroundColor: SENAC.background,
     flexGrow: 1,
     padding: 20,
     gap: 16,
   },
   hero: {
-    backgroundColor: SENAC.azul,
+    backgroundColor: SENAC.blue,
     borderRadius: 16,
     padding: 20,
     gap: 8,
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
     borderLeftWidth: 4,
-    borderLeftColor: SENAC.laranja,
+    borderLeftColor: SENAC.orange,
     borderRadius: 12,
     padding: 16,
     gap: 6,
@@ -77,12 +77,12 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   cardTitle: {
-    color: SENAC.azul,
+    color: SENAC.blue,
     fontSize: 17,
     fontWeight: '700',
   },
   cardText: {
-    color: SENAC.texto,
+    color: SENAC.text,
     fontSize: 15,
     lineHeight: 22,
   },
