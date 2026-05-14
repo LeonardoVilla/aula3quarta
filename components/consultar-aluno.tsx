@@ -80,7 +80,7 @@ export default function ConsultarAluno(){
                             <Text style={styles.buttonText}>Editar</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.buttonExcluir} onPress={() => excluirAlunos(item.id)}>  
+                        <TouchableOpacity style={[styles.buttonExcluir, styles.buttonSpacing]} onPress={() => excluirAlunos(item.id)}>  
                             <Text style={styles.buttonText}>Excluir</Text>
                         </TouchableOpacity>
                         </View>
@@ -158,7 +158,9 @@ const styles = StyleSheet.create({
     actions: {
         marginTop: 16,
         flexDirection: 'row',
-        gap: 12,
+    },
+    buttonSpacing: {
+        marginLeft: 12,
     },
     buttonText: {
         color: '#ffffff',
