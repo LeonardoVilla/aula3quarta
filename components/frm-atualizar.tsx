@@ -6,14 +6,14 @@ import {
     StyleSheet,
 } from 'react-native';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 //npm install react-native-toast-message
 import Toast from 'react-native-toast-message';
 import { supabase } from '@/lib/supabase';
+import { useIsFocused } from "@react-navigation/native";
+import { useLocalSearchParams } from 'expo-router';
 
-import { router } from 'expo-router';//captura de rota
-
-export default function Cadastro() {
+export default function Alterar() {
 
     const [nomeAluno, setNomeAluno] = useState('')
     const [idadeAluno, setIdadeAluno] = useState('')
@@ -21,18 +21,65 @@ export default function Cadastro() {
     
     const [loading, setLoading] = useState(false)
 
-    async function cadastrarAluno() {
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if(isFocused){
+            carregarAlunos();
+        }
+    }, [isFocused]);
+
+    const { id } = useLocalSearchParams();
+
+    async function carregarAlunos(){
+        const { data, error } = await supabase
+            .from("tb_aluno")
+            .select()
+            .eq('id',id)
+            .single()
+        
+        if(error){
+            Toast.show({
+                type: 'error',
+                text1: 'Erro!',
+                text2: 'Aluno não encontrado.'+ error.message,
+            })
+        }else{
+
+            if(data.nome){
+                setNomeAluno(data.nome);
+            }else{
+                setNomeAluno('');
+            }
+
+            {[
+                'nome','Juquinha',
+                'idade', 10,
+                'email', '',
+            ]}
+
+            setNomeAluno(data.nome ? data.nome : '');
+            setIdadeAluno(data.idade ?? '');
+            setEmailAluno(data.email ?? '');
+        }
+    }
+
+    async function cadAluno() {
 
         setLoading(true)
 
-        const { error } = await supabase
+        const { data, error } = await supabase
             .from('tb_aluno')
-            .insert(
-                { nomeAluno, idadeAluno, emailAluno}
-            )
+            .insert([
+                {
+                    nome: nomeAluno, 
+                    idade: idadeAluno, 
+                    email: emailAluno
+                },
+            ])
         .select()
 
         if(error){
+            setLoading(false)
             Toast.show({
                 type: 'error',
                 text1: 'Erro!',
@@ -43,7 +90,7 @@ export default function Cadastro() {
             Toast.show({
                 type: 'success',
                 text1: 'Sucesso!',
-                text2: 'Cadastro realizado com sucesso!'
+                text2: `Aluno ${data?.[0]?.nome} cadastrado com sucesso!`
             })
         }
         
@@ -51,7 +98,7 @@ export default function Cadastro() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.Text}> Área Restrita</Text>
+            <Text style={styles.Text}> Atualização de Aluno </Text>
 
             <TextInput
                 style={styles.Input}
@@ -74,12 +121,11 @@ export default function Cadastro() {
                 onChangeText={setEmailAluno}
             />
 
-
-            <TouchableOpacity style={styles.Button} onPress={cadastrarAluno} disabled={loading}>
-                <Text style={styles.Text}>Cadastrar Aluno</Text>
-            </TouchableOpacity>
-            
             <Toast />
+
+            <TouchableOpacity style={styles.Button} onPress={cadAluno} disabled={loading}>
+                <Text style={styles.Text}>Alterar Aluno</Text>
+            </TouchableOpacity>
         </View>
     );
 }
