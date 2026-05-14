@@ -5,6 +5,9 @@ const SENAC = {
   orange: '#F7941D',
   background: '#F5F8FC',
   text: '#1F2937',
+  white: '#FFFFFF',
+  lightText: '#E5EDF7',
+  shadow: '#000000',
 };
 
 export default function HomeScreen() {
@@ -47,30 +50,30 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   heroTag: {
-    color: '#FFFFFF',
+    color: SENAC.white,
     fontSize: 13,
     fontWeight: '700',
     letterSpacing: 1,
   },
   heroTitle: {
-    color: '#FFFFFF',
+    color: SENAC.white,
     fontSize: 24,
     fontWeight: '700',
     lineHeight: 30,
   },
   heroSubtitle: {
-    color: '#E5EDF7',
+    color: SENAC.lightText,
     fontSize: 15,
     lineHeight: 22,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: SENAC.white,
     borderLeftWidth: 4,
     borderLeftColor: SENAC.orange,
     borderRadius: 12,
     padding: 16,
     gap: 6,
-    shadowColor: '#000000',
+    shadowColor: SENAC.shadow,
     shadowOpacity: 0.08,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
