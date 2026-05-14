@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
     buttonAlterar:{
         backgroundColor: '#2563eb',
         paddingVertical: 12,
+        paddingHorizontal: 16,
         borderRadius: 8,
         alignItems: 'center',
         flex: 1,
@@ -140,6 +141,7 @@ const styles = StyleSheet.create({
     buttonExcluir:{
         backgroundColor: '#ef4444',
         paddingVertical: 12,
+        paddingHorizontal: 16,
         borderRadius: 8,
         alignItems: 'center',
         flex: 1,
