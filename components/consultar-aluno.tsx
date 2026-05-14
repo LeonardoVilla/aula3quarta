@@ -27,7 +27,7 @@ export default function ConsultarAluno(){
     }
 
     async function editarAlunos(id: number){
-        router.push({pathname: '/(tabs)/cadastro', params: {id: id}});
+        router.push({pathname: '/(tabs)/alterar', params: {id: id}});
     }
 
     async function excluirAlunos(id: number){
