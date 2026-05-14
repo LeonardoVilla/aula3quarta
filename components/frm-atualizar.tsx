@@ -6,11 +6,11 @@ import {
     StyleSheet,
 } from 'react-native';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useState } from "react";
 //npm install react-native-toast-message
 import Toast from 'react-native-toast-message';
 import { supabase } from '@/lib/supabase';
-import { useIsFocused } from "@react-navigation/native";
+import { useFocusRefresh } from "@/hooks/use-focus-refresh";
 import { useLocalSearchParams } from 'expo-router';
 
 export default function Alterar() {
@@ -21,14 +21,9 @@ export default function Alterar() {
     
     const [loading, setLoading] = useState(false)
 
-    const isFocused = useIsFocused();
-    useEffect(() => {
-        if(isFocused){
-            carregarAlunos();
-        }
-    }, [isFocused]);
-
     const { id } = useLocalSearchParams();
+
+    useFocusRefresh(carregarAlunos);
 
     async function carregarAlunos(){
         const { data, error } = await supabase
