@@ -19,10 +19,19 @@ export default function ConsultarAluno(){
     }, [isFocused]);
 
     async function carregarAlunos(){
-        const { data } = await supabase
+        const { data, error } = await supabase
             .from("tb_aluno")
             .select("*")
-        
+
+        if(error){
+            Toast.show({
+                type: 'error',
+                text1: 'Erro!',
+                text2: 'Não foi possível carregar os alunos.' + error.message
+            });
+            return;
+        }
+
         setAlunos(data || []);
     }
 
@@ -149,7 +158,7 @@ const styles = StyleSheet.create({
     actions: {
         marginTop: 16,
         flexDirection: 'row',
-        gap: 10,
+        gap: 12,
     },
     buttonText: {
         color: '#ffffff',
