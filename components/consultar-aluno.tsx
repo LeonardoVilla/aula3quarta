@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
-import { useIsFocused } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useFocusRefresh } from "@/hooks/use-focus-refresh";
+import { useCallback, useState } from "react";
 
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -10,21 +10,16 @@ import Toast from "react-native-toast-message";
 
 export default function ConsultarAluno(){
     const [alunos, setAlunos] = useState<any[]>([]);
-    const isFocused = useIsFocused();
 
-    useEffect(() => {
-        if(isFocused){
-            carregarAlunos();
-        }
-    }, [isFocused]);
-
-    async function carregarAlunos(){
+    const carregarAlunos = useCallback(async () => {
         const { data, error } = await supabase
             .from("tb_aluno")
             .select("*")
         
         setAlunos(data || []);
-    }
+    }, []);
+
+    useFocusRefresh(carregarAlunos);
 
     async function editarAlunos(id: number){
         router.push({pathname: '/(tabs)/alterar', params: {id: id}});
