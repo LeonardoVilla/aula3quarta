@@ -22,7 +22,16 @@ export default function ConsultarAluno(){
         const { data, error } = await supabase
             .from("tb_aluno")
             .select("*")
-        
+
+        if (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erro!',
+                text2: `Não foi possível carregar os alunos. ${error.message}`
+            });
+            return;
+        }
+
         setAlunos(data || []);
     }
 
@@ -55,22 +64,26 @@ export default function ConsultarAluno(){
 
     return(
         <View style={styles.container}>
-            <Text>Consultar Aluno</Text>
+            <Text style={styles.title}>Consultar Aluno</Text>
             <FlatList
                 data={ alunos }
+                contentContainerStyle={styles.listContent}
                 keyExtractor={ (item) => item.id.toString() }
+                ListEmptyComponent={<Text style={styles.emptyText}>Nenhum aluno cadastrado.</Text>}
                 renderItem={({item}) =>(
                     <View style={styles.card}>
                         <Text style={styles.name}>{item.nome}</Text>
-                        <Text style={styles.meta}>{item.idade}</Text>
-                        <Text style={styles.meta}>{item.email}</Text>
+                        <Text style={styles.meta}>Idade: {item.idade}</Text>
+                        <Text style={styles.meta}>Email: {item.email}</Text>
+                        <View style={styles.actions}>
                         <TouchableOpacity style={styles.buttonAlterar} onPress={() => editarAlunos(item.id)}>
-                            <Text>Editar</Text>
+                            <Text style={styles.buttonText}>Editar</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.buttonExcluir} onPress={() => excluirAlunos(item.id)}>  
-                            <Text>Excluir</Text>
+                        <TouchableOpacity style={[styles.buttonExcluir, styles.buttonSpacing]} onPress={() => excluirAlunos(item.id)}>  
+                            <Text style={styles.buttonText}>Excluir</Text>
                         </TouchableOpacity>
+                        </View>
                     </View>
                 )}
             />
@@ -84,11 +97,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f3f4f6',
         paddingHorizontal: 16,
+        paddingTop: 50,
     },
     listContent: {
         flexGrow: 1,
-        paddingTop: 50,
-        paddingBottom: 24,
+        paddingBottom: 20,
     },
     title: {
         fontSize: 22,
@@ -128,16 +141,30 @@ const styles = StyleSheet.create({
     },
     buttonAlterar:{
         backgroundColor: '#2563eb',
-        padding: 12,
+        paddingVertical: 12,
+        paddingHorizontal: 16,
         borderRadius: 8,
         alignItems: 'center',
-        marginTop: 16,
+        flex: 1,
     },
     buttonExcluir:{
         backgroundColor: '#ef4444',
-        padding: 12,
+        paddingVertical: 12,
+        paddingHorizontal: 16,
         borderRadius: 8,
         alignItems: 'center',
+        flex: 1,
+    },
+    actions: {
         marginTop: 16,
+        flexDirection: 'row',
+    },
+    buttonSpacing: {
+        marginLeft: 12,
+    },
+    buttonText: {
+        color: '#ffffff',
+        fontSize: 14,
+        fontWeight: '700',
     },
 })
