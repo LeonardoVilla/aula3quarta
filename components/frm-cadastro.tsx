@@ -10,6 +10,7 @@ import { useState } from 'react';
 //npm install react-native-toast-message
 import Toast from 'react-native-toast-message';
 import { supabase } from '@/lib/supabase';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Cadastro() {
 
@@ -54,7 +55,7 @@ export default function Cadastro() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.Text}> Área Restrita</Text>
+            <Text style={styles.Text}><Ionicons name="school-outline" size={22} color="#ffffff" /> Área Restrita</Text>
 
             <TextInput
                 style={styles.Input}
@@ -80,7 +81,7 @@ export default function Cadastro() {
             <Toast />
 
             <TouchableOpacity style={styles.Button} onPress={cadAluno} disabled={loading}>
-                <Text style={styles.Text}>Cadastrar Aluno</Text>
+                <Text style={styles.ButtonText}><Ionicons name="person-add-outline" size={20} color="#0f172a" /> Cadastrar Aluno</Text>
             </TouchableOpacity>
         </View>
     );
@@ -110,5 +111,11 @@ const styles = StyleSheet.create({
         height: 40,
         backgroundColor: '#c2e015',
         alignItems: 'center',
+        justifyContent: 'center',
+    },
+    ButtonText: {
+        fontSize: 20,
+        color: '#0f172a',
+        fontWeight: '700',
     },
 })

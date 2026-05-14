@@ -3,8 +3,9 @@ import { useFocusRefresh } from "@/hooks/use-focus-refresh";
 import { useCallback, useState } from "react";
 
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
+import { Swipeable } from "react-native-gesture-handler";
 import { router } from "expo-router";
+import { Ionicons } from '@expo/vector-icons';
 
 import Toast from "react-native-toast-message";
 
@@ -31,6 +32,7 @@ export default function ConsultarAluno(){
             .from("tb_aluno")
             .delete()
             .eq('id', id)
+            .select()
 
         if(error ){
             Toast.show({
@@ -48,25 +50,56 @@ export default function ConsultarAluno(){
         carregarAlunos();
     }
 
+    function renderLeftActions(item: any) {
+        return (
+            <View style={styles.leftActions}>
+                <TouchableOpacity
+                    style={[styles.swipeButton, styles.buttonEditar]}
+                    onPress={() => editarAlunos(item.id)}
+                >
+                    <Ionicons name="create-outline" size={16} color="#ffffff" />
+                    <Text style={styles.swipeButtonText}>Editar</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
+    function renderRightActions(item: any) {
+        return (
+            <View style={styles.rightActions}>
+
+                <TouchableOpacity
+                    style={[styles.swipeButton, styles.buttonExcluir]}
+                    onPress={() => excluirAlunos(item.id)}
+                >
+                    <Ionicons name="trash-outline" size={16} color="#ffffff" />
+                    <Text style={styles.swipeButtonText}>Excluir</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
     return(
         <View style={styles.container}>
-            <Text>Consultar Aluno</Text>
+            <Text style={styles.listTitle}>
+                <Ionicons name="search" size={18} color="#111827" /> Consultar Aluno
+            </Text>
             <FlatList
                 data={ alunos }
+                contentContainerStyle={styles.listContent}
                 keyExtractor={ (item) => item.id.toString() }
                 renderItem={({item}) =>(
-                    <View style={styles.card}>
-                        <Text style={styles.name}>{item.nome}</Text>
-                        <Text style={styles.meta}>{item.idade}</Text>
-                        <Text style={styles.meta}>{item.email}</Text>
-                        <TouchableOpacity style={styles.buttonAlterar} onPress={() => editarAlunos(item.id)}>
-                            <Text>Editar</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={styles.buttonExcluir} onPress={() => excluirAlunos(item.id)}>  
-                            <Text>Excluir</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <Swipeable
+                        renderLeftActions={() => renderLeftActions(item)}
+                        renderRightActions={() => renderRightActions(item)}
+                        overshootLeft={false}
+                        overshootRight={false}
+                    >
+                        <View style={styles.card}>
+                            <Text style={styles.name}>{item.nome}</Text>
+                            <Text style={styles.meta}>{`${item.idade} anos  |  ${item.email}`}</Text>
+                        </View>
+                    </Swipeable>
                 )}
             />
             <Toast />
@@ -77,43 +110,39 @@ export default function ConsultarAluno(){
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f3f4f6',
-        paddingHorizontal: 16,
+        backgroundColor: '#ffffff',
+        paddingHorizontal: 8,
     },
     listContent: {
         flexGrow: 1,
-        paddingTop: 50,
+        paddingTop: 12,
         paddingBottom: 24,
     },
-    title: {
-        fontSize: 22,
-        fontWeight: '700',
+    listTitle: {
+        fontSize: 20,
+        fontWeight: '600',
         color: '#111827',
-        marginBottom: 16,
+        marginTop: 12,
+        marginBottom: 10,
+        paddingHorizontal: 8,
     },
     card: {
         backgroundColor: '#ffffff',
-        padding: 16,
-        borderRadius: 12,
-        marginBottom: 12,
-        borderWidth: 1,
-        borderColor: '#e5e7eb',
-        shadowColor: '#000',
-        shadowOpacity: 0.06,
-        shadowRadius: 8,
-        shadowOffset: { width: 0, height: 2 },
-        elevation: 2,
+        minHeight: 72,
+        paddingHorizontal: 16,
+        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderColor: '#d1d5db',
     },
     name: {
-        fontSize: 18,
-        fontWeight: '700',
+        fontSize: 20,
+        fontWeight: '500',
         color: '#111827',
-        marginBottom: 8,
+        marginBottom: 4,
     },
     meta: {
-        fontSize: 14,
-        color: '#4b5563',
-        marginBottom: 4,
+        fontSize: 13,
+        color: '#6b7280',
     },
     emptyText: {
         textAlign: 'center',
@@ -121,18 +150,28 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginTop: 32,
     },
-    buttonAlterar:{
-        backgroundColor: '#2563eb',
-        padding: 12,
-        borderRadius: 8,
-        alignItems: 'center',
-        marginTop: 16,
+    leftActions: {
+        justifyContent: "center",
+    },
+    rightActions: {
+        flexDirection: "row",
+        justifyContent: "flex-end",
+    },
+    swipeButton: {
+        width: 92,
+        height: '100%',
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 6,
+    },
+    swipeButtonText: {
+        color: "#ffffff",
+        fontWeight: "700",
+    },
+    buttonEditar:{
+        backgroundColor: '#16a34a',
     },
     buttonExcluir:{
-        backgroundColor: '#ef4444',
-        padding: 12,
-        borderRadius: 8,
-        alignItems: 'center',
-        marginTop: 16,
+        backgroundColor: '#dc2626',
     },
 })
