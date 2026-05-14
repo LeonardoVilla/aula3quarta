@@ -1,17 +1,18 @@
 import {
-    View,
+    StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
-    StyleSheet,
+    View,
 } from 'react-native';
 
 import { useCallback, useState } from "react";
 //npm install react-native-toast-message
-import Toast from 'react-native-toast-message';
-import { supabase } from '@/lib/supabase';
 import { useFocusRefresh } from "@/hooks/use-focus-refresh";
+import { supabase } from '@/lib/supabase';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
+import Toast from 'react-native-toast-message';
 
 export default function Alterar() {
 
@@ -22,14 +23,19 @@ export default function Alterar() {
     const [loading, setLoading] = useState(false)
 
     const { id } = useLocalSearchParams();
+    const idParam = Array.isArray(id) ? id[0] : id;
+    const alunoId = Number(idParam);
+    const hasValidId = Number.isFinite(alunoId) && alunoId > 0;
 
-    useFocusRefresh(carregarAlunos);
+    const carregarAlunos = useCallback(async () => {
+        if (!hasValidId) {
+            return;
+        }
 
-    async function carregarAlunos(){
         const { data, error } = await supabase
             .from("tb_aluno")
             .select()
-            .eq('id',id)
+            .eq('id', alunoId)
             .single()
         
         if(error){
@@ -39,20 +45,24 @@ export default function Alterar() {
                 text2: 'Aluno não encontrado.'+ error.message,
             })
         }else{
-
-            if(data.nome){
-                setNomeAluno(data.nome);
-            }else{
-                setNomeAluno('');
-            }
-
             setNomeAluno(data.nome ? data.nome : '');
             setIdadeAluno(data.idade ?? '');
             setEmailAluno(data.email ?? '');
         }
-    }
+    }, [alunoId, hasValidId]);
+
+    useFocusRefresh(carregarAlunos);
 
     async function atualizarAluno() {
+        if (!hasValidId) {
+            Toast.show({
+                type: 'error',
+                text1: 'ID inválido',
+                text2: 'Selecione um aluno na tela de consulta para alterar.',
+            })
+            return;
+        }
+
         setLoading(true)
         const { data, error } = await supabase
             .from('tb_aluno')
@@ -63,7 +73,7 @@ export default function Alterar() {
                     email: emailAluno
                 },
             ])
-            .eq('id', id)
+            .eq('id', alunoId)
             .select()
 
         if(error){
@@ -86,7 +96,7 @@ export default function Alterar() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.Text}> Atualização de Aluno </Text>
+            <Text style={styles.Text}><Ionicons name="create-outline" size={22} color="#ffffff" /> Atualização de Aluno </Text>
 
             <TextInput
                 style={styles.Input}
@@ -112,7 +122,7 @@ export default function Alterar() {
             <Toast />
 
             <TouchableOpacity style={styles.Button} onPress={atualizarAluno} disabled={loading}>
-                <Text style={styles.Text}>Alterar Aluno</Text>
+                <Text style={styles.ButtonText}><Ionicons name="save-outline" size={20} color="#0f172a" /> Alterar Aluno</Text>
             </TouchableOpacity>
         </View>
     );
@@ -142,5 +152,11 @@ const styles = StyleSheet.create({
         height: 40,
         backgroundColor: '#c2e015',
         alignItems: 'center',
+        justifyContent: 'center',
+    },
+    ButtonText: {
+        fontSize: 20,
+        color: '#0f172a',
+        fontWeight: '700',
     },
 })
